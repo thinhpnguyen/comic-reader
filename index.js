@@ -8,15 +8,31 @@ let prevEn = 0;
 let files; //hold file event object as global to handle later ex: changing pages, style
 let currentPage = 0; //keep track of current page in double page mode
 let mode = "double";
-
+let coverWidth; // used to check for any combine double page to display it by itself
+let doublePage = false;
 function reset() {
   firstPage = true;
   currentPage = input.files.length - 1; // initialize current page for every new files read in
   let pages = document.querySelector(".pages");
   pages.innerHTML = "";
 }
+async function loadImage(url, elem) {
+  return new Promise((resolve, reject) => {
+    elem.onload = () => resolve(elem);
+    elem.onerror = reject;
+    elem.src = url;
+  });
+}
+async function readFileAsDataURL(file) {
+  let result_base64 = await new Promise((resolve) => {
+    let fileReader = new FileReader();
+    fileReader.onload = (e) => resolve(fileReader.result);
+    fileReader.readAsDataURL(file);
+  });
+  return result_base64;
+}
 
-function handleFiles(files) {
+async function handleFiles(files) {
   // continuous scroll
   if (mode === "continuous") {
     //choosing file in Finder from bottom up make the first file becomes last in Filelist
@@ -40,30 +56,49 @@ function handleFiles(files) {
 
     //only display 1 page for the cover
     //and if the last page is odd then only display 1 page
-    let i = firstPage || currentPage === 0 ? 0 : 1;
+    let k = firstPage || currentPage === 0 ? 0 : 1;
 
-    while (i >= 0) {
-      if (currentPage < 0) return;
-      (function () {
-        let div = document.createElement("div");
-        div.className = "doublePageContainer";
-        let reader = new FileReader();
-        document.querySelector(".pages").append(div); // place holder div
-        // the images loaded asynchronously will be place to their respective divs, so they will be in order
-        reader.onload = function () {
-          const img = new Image();
-          img.src = reader.result;
-          img.className = "page";
-          img.draggable = "false";
-          div.appendChild(img);
-        };
-        reader.readAsDataURL(files[currentPage - i]);
-        i--;
-      })();
+    let i = 0;
+    let startPoint = currentPage;
+    while (i <= k) {
+      if (startPoint < 0) return; // handle the case when cover is the only page left
+      let div = document.createElement("div");
+      div.className = "doublePageContainer";
+      document.querySelector(".pages").prepend(div); // place holder div
+      // the images loaded synchronously to check if first image is double page, if so then only load one;
+      let width;
+      const img = new Image();
+      const imgSrc = await readFileAsDataURL(files[startPoint - i]);
+      await loadImage(imgSrc, img);
+      img.className = "page";
+      img.draggable = "false";
+      console.log("i", i);
+      console.log("current page", currentPage);
+      width = img.width;
+      if (startPoint === files.length - 1 && coverWidth === undefined) {
+        coverWidth = width;
+        console.log("coverWidth");
+        div.appendChild(img);
+        currentPage--;
+        break;
+      }
+      //if this is doubled page but is a second page, then not display
+      if (width > coverWidth + 10 && i === 1) {
+        console.log("double page on second");
+        break;
+      } //10 is an adjustment
+      else if (width > coverWidth) {
+        div.className = "singlePageContainer";
+        div.appendChild(img);
+        currentPage--;
+        break;
+      }
+      div.appendChild(img);
+      currentPage--;
+      i++;
     }
-    currentPage -= firstPage ? 1 : 2;
-    firstPage = false;
   }
+  firstPage = false;
 }
 //display a page as single
 

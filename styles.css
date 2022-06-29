@@ -18,5 +18,10 @@
 
 .doublePageContainer {
   display: inline-block;
-  width: 30%;
+  width: 40%;
+}
+
+.singlePageContainer {
+  display: inline-block;
+  width: 80%;
 }
