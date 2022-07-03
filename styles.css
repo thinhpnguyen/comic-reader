@@ -25,3 +25,8 @@
   display: inline-block;
   width: 80%;
 }
+
+.continousPageContainer {
+  display: inline-block;
+  width: 60%;
+}
