@@ -1,5 +1,6 @@
 (function () {
   const input = document.querySelector('input[type="file"]');
+  const dropArea = document.getElementById("drop-zone");
   const sw = document.querySelector(".switchButton");
   const pages = document.querySelector(".pages");
   const previousButton = document.querySelector(".previousButton");
@@ -8,7 +9,7 @@
   let prevEn = 0;
   let files; //hold file event object as global to handle later ex: changing pages, style
   let currentPage = 0; //keep track of current page in double page mode
-  let mode = "continuous";
+  let mode = "conti";
   let coverWidth; // used to check for any combine double page to display it by itself
   function reset() {
     firstPage = true;
@@ -16,51 +17,7 @@
     let pages = document.querySelector(".pages");
     pages.innerHTML = "";
   }
-  async function loadImage(url, elem) {
-    //synchronously
-    return new Promise((resolve, reject) => {
-      elem.onload = () => resolve(elem);
-      elem.onerror = reject;
-      elem.src = url;
-    });
-  }
-  async function readFileAsDataURL(file) {
-    let result_base64 = await new Promise((resolve) => {
-      let fileReader = new FileReader();
-      fileReader.onload = (e) => resolve(fileReader.result);
-      fileReader.readAsDataURL(file);
-    });
-    return result_base64;
-  }
 
-  function displayContinuously(files) {
-    // continuous scroll
-    //code credit: https://github.com/dduponchel
-    let re = /(.jpg|.png|.gif|.ps|.jpeg)$/;
-    Object.keys(files)
-      .filter(function (fileName) {
-        // don't consider non image files
-        return re.test(fileName.toLowerCase());
-      })
-      .map(function (fileName) {
-        let div = document.createElement("div");
-        div.className = "continousPageContainer";
-        document.querySelector(".pages").append(div); // place holder div
-        // the images loaded asynchronously will be place to their respective divs, so they will be in order
-        let file = files[fileName];
-        file.async("blob").then(
-          function (blob) {
-            const img = new Image();
-            img.src = URL.createObjectURL(blob);
-            img.className = "page";
-            div.appendChild(img);
-          },
-          function (e) {
-            console.log(e);
-          }
-        );
-      });
-  }
   async function handleFiles(files) {
     {
       // continuous scroll
@@ -129,7 +86,7 @@
     let zip = new JSZip();
     zip.loadAsync(files[0]).then(
       function (zip) {
-        displayContinuously(zip.files);
+        display(mode, zip.files);
       },
       function (e) {
         console.log(e);
@@ -140,7 +97,7 @@
   //display a page as single
 
   function flip() {
-    if (mode === "continuous") return;
+    if (mode !== "double" || mode !== "single") return;
     const container = document.querySelector(".pages");
     if (container) {
       prevEn += 1;
@@ -208,7 +165,8 @@
     reset();
     handleFiles(files);
   });
-  document.addEventListener(
+
+  dropArea.addEventListener(
     "dragover",
     function (e) {
       e.preventDefault();
@@ -216,7 +174,7 @@
     },
     false
   );
-  document.addEventListener(
+  dropArea.addEventListener(
     "drop",
     function (e) {
       e.preventDefault();
