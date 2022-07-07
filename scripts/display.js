@@ -19,10 +19,15 @@ function intializeImageContainer() {
   return div;
 }
 
-function addImage(src) {
+function addImage(src, div) {
   let img = new Image();
   img.className = "page";
   img.draggable = "false";
+  img.onload = function () {
+    if (img.width > img.height) {
+      div.setAttribute("style", "width:90%"); // make double page more impactful
+    }
+  };
   img.src = URL.createObjectURL(src);
 
   return img;
@@ -44,7 +49,7 @@ function displayContinuously(files) {
       file.async("blob").then(
         // get file data as a blob
         function (blob) {
-          const img = addImage(blob);
+          const img = addImage(blob, div);
           div.appendChild(img);
         },
         function (err) {

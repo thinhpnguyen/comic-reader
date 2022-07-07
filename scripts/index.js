@@ -17,6 +17,14 @@
     let pages = document.querySelector(".pages");
     pages.innerHTML = "";
   }
+  // async function loadImage(url, elem) {
+  //   //synchronously
+  //   return new Promise((resolve, reject) => {
+  //     elem.onload = () => resolve(elem);
+  //     elem.onerror = reject;
+  //     elem.src = url;
+  //   });
+  // }
 
   async function handleFiles(files) {
     {
