@@ -4,16 +4,16 @@
   const sw = document.querySelector(".switchButton");
   const pages = document.querySelector(".pages");
   const previousButton = document.querySelector(".previousButton");
-  const style = document.querySelector(".style");
-  let firstPage = true;
+  const modeButton = document.getElementById("mode-button");
+
   let prevEn = 0;
-  let files; //hold file event object as global to handle later ex: changing pages, style
-  let currentPage = 0; //keep track of current page in double page mode
-  let mode = "conti";
-  let coverWidth; // used to check for any combine double page to display it by itself
+  let file; //hold file event object as global to handle later ex: changing pages, style
+  let currentPage = { val: 0 }; //keep track of current page in double page mode
+  let mode = "double";
+  let keys;
   function reset() {
     firstPage = true;
-    currentPage = input.files.length - 1; // initialize current page for every new files read in
+    currentPage.val = input.files.length - 1; // initialize current page for every new files read in
     let pages = document.querySelector(".pages");
     pages.innerHTML = "";
   }
@@ -26,7 +26,18 @@
   //   });
   // }
 
+  /*Filter Function*/
+  function getValidImageKeys(file) {
+    let re = /(.jpg|.png|.gif|.ps|.jpeg)$/;
+    return Object.keys(file).filter(function (fileName) {
+      // don't consider non image files
+      return re.test(fileName.toLowerCase());
+    });
+  }
   async function handleFiles(files) {
+    const inputContainer = document.querySelector(".inputContainer");
+    inputContainer.setAttribute("style", "display:none");
+    inputContainer.style.display = "none";
     {
       // continuous scroll
       /*if (mode === "continuous") {
@@ -94,7 +105,9 @@
     let zip = new JSZip();
     zip.loadAsync(files[0]).then(
       function (zip) {
-        display(mode, zip.files);
+        keys = getValidImageKeys(zip.files); //get keys of valid images to be display
+        file = zip.files;
+        display(mode, currentPage, keys, file);
       },
       function (e) {
         console.log(e);
@@ -105,23 +118,26 @@
   //display a page as single
 
   function flip() {
-    if (mode !== "double" || mode !== "single") return;
+    console.log(mode);
+    if (mode !== "double" && mode !== "single") return;
+    console.log("here");
     const container = document.querySelector(".pages");
     if (container) {
       prevEn += 1;
       container.innerHTML = "";
-      handleFiles(files);
+      console.log("called");
+      display(mode, currentPage, keys, file);
     }
   }
 
   // need to fix, may change current page to even or odd
   function switchPages() {
-    const container = document.querySelector(".pages");
-    if (container) {
-      currentPage += 1;
-      container.innerHTML = "";
-      handleFiles(files);
-    }
+    // const container = document.querySelector(".pages");
+    // if (container) {
+    //   currentPage += 1;
+    //   container.innerHTML = "";
+    //   //display(mode, currentPage, keys, file);
+    // }
   }
 
   //back button
@@ -152,7 +168,7 @@
   });
 
   pages.addEventListener("click", function (e) {
-    if (currentPage < 0) return;
+    if (currentPage.val < 0) return;
     flip();
   });
 
@@ -161,17 +177,19 @@
     previous();
   });
 
-  style.addEventListener("click", function (e) {
+  modeButton.addEventListener("click", function (e) {
     switch (mode) {
       case "double":
-        mode = "continuous";
+        mode = "conti";
         break;
-      case "continuous":
+      case "conti":
         mode = "double";
         break;
+      default:
+        console.log("some thing is wrong with the mode");
     }
     reset();
-    handleFiles(files);
+    display(mode, currentPage, keys, file);
   });
 
   dropArea.addEventListener(
