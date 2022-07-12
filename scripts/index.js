@@ -7,7 +7,7 @@
   const modeButton = document.getElementById("mode-button");
 
   let prevEn = 0;
-  let file; //hold file event object as global to handle later ex: changing pages, style
+  let images; //hold images so they remain the same when switching modes
   let currentPage = { val: 0 }; //keep track of current page in double page mode
   let mode = "double";
   let keys;
@@ -28,11 +28,28 @@
 
   /*Filter Function*/
   function getValidImageKeys(file) {
+    let res = [];
     let re = /(.jpg|.png|.gif|.ps|.jpeg)$/;
-    return Object.keys(file).filter(function (fileName) {
-      // don't consider non image files
-      return re.test(fileName.toLowerCase());
-    });
+    Object.keys(file)
+      .filter(function (fileName) {
+        // don't consider non image files
+        return re.test(fileName.toLowerCase());
+      })
+      .map((key) => {
+        let img = new Image();
+        res.push(img);
+        let f = file[key];
+        f.async("blob").then(
+          // get file data as a blob
+          function (blob) {
+            img.src = URL.createObjectURL(blob);
+          },
+          function (err) {
+            console.log(err);
+          }
+        );
+      });
+    return res;
   }
   async function handleFiles(files) {
     const inputContainer = document.querySelector(".inputContainer");
@@ -105,9 +122,8 @@
     let zip = new JSZip();
     zip.loadAsync(files[0]).then(
       function (zip) {
-        keys = getValidImageKeys(zip.files); //get keys of valid images to be display
-        file = zip.files;
-        display(mode, currentPage, keys, file);
+        images = getValidImageKeys(zip.files); //get keys of valid images to be display
+        display(mode, currentPage, images);
       },
       function (e) {
         console.log(e);
@@ -120,13 +136,11 @@
   function flip() {
     console.log(mode);
     if (mode !== "double" && mode !== "single") return;
-    console.log("here");
     const container = document.querySelector(".pages");
     if (container) {
       prevEn += 1;
       container.innerHTML = "";
-      console.log("called");
-      display(mode, currentPage, keys, file);
+      display(mode, currentPage, images);
     }
   }
 
@@ -189,7 +203,7 @@
         console.log("some thing is wrong with the mode");
     }
     reset();
-    display(mode, currentPage, keys, file);
+    display(mode, currentPage, images);
   });
 
   dropArea.addEventListener(
