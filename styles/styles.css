@@ -42,6 +42,7 @@ input {
   aspect-ratio: 2/1;
   border: dashed grey;
   border-radius: 30px;
+  cursor: pointer;
 }
 .fileIcon {
   display: inline-block;
