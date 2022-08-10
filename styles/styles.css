@@ -81,6 +81,7 @@ input {
   display: block;
   text-align: center;
   padding-top: 20vh;
+  margin: 0;
 }
 .inputFile {
   display: inline-block;
@@ -138,7 +139,7 @@ input {
 }
 @media (max-width: 50rem) {
   .inputContainer {
-    margin-top: 8vh;
+    padding-top: 8vh;
   }
   .inputFile {
     width: 60%;
