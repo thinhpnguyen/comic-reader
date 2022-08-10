@@ -9,7 +9,11 @@ body {
   top: 0;
   position: relative;
 }
-
+.navArea {
+  position: fixed;
+  height: 100%;
+  z-index: 100;
+}
 .logo {
   display: block;
   background-color: brown;
@@ -76,7 +80,7 @@ input {
   position: relative;
   display: block;
   text-align: center;
-  margin-top: 20vh;
+  padding-top: 20vh;
 }
 .inputFile {
   display: inline-block;
