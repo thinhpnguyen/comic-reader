@@ -9,9 +9,9 @@
   let prevEn = 0;
   let images; //hold images so they remain the same when switching modes
   let currentPage = 0; //keep track of current page in double page mode
-  let mode = "double";
+  //let mode = "double";
   let files;
-
+  let pageOrder = [];
   function reset() {
     firstPage = true;
     currentPage = files.length - 1; // initialize current page for every new files read in
@@ -52,6 +52,7 @@
       });
     return res;
   }
+
   function handleFiles(files) {
     const inputContainer = document.querySelector(".inputContainer");
     inputContainer.setAttribute("style", "display:none");
@@ -60,7 +61,7 @@
     zip.loadAsync(files[0]).then(
       function (zip) {
         images = getValidImageKeys(zip.files); //get keys of valid images to be display
-        console.log(images);
+        //console.log(images);
         display(mode, currentPage, incrementCurrentPage, images);
       },
       function (e) {
@@ -132,12 +133,15 @@
   });
 
   modeButton.addEventListener("click", function (e) {
+    let mode = modeButton.dataset.mode;
     switch (mode) {
       case "double":
-        mode = "conti";
+        modeButton.dataset.mode = "conti";
+        modeButton.innerText = "2-page layout";
         break;
       case "conti":
-        mode = "double";
+        modeButton.dataset.mode = "double";
+        modeButton.innerText = "continous layout";
         break;
       default:
         console.log("some thing is wrong with the mode");

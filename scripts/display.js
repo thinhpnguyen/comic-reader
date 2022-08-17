@@ -61,7 +61,18 @@ function displayContinuously(files) {
     div.append(img);
   });
 }
+/*********** CALCUALTE CURRENT PAGE PAIR ************
+ * Precompute the page pair to see if a page is paired with another page or alone vector<vector<int>> page_order
+ * when switch from continuous to double page mode
+ * use binary search to find the pair that contains the current page id since the page_order must be increasing
+ * go in back and forth between page is also easier because the order is already precomputed
+ *
+ *
+ */
 
+/*
+This function should take in the current index in the page order then display it
+*/
 function displayDoubly(currentPage, incrementCurrentPage, files) {
   // double page
 
@@ -75,7 +86,7 @@ function displayDoubly(currentPage, incrementCurrentPage, files) {
     let div = intializeImageContainer("doublePageContainer", "ltr");
     // the images loaded synchronously to check if first image is double page, if so then only load one;
     let img = files[startPoint + i];
-    console.log(img);
+    //console.log(img);
     styleImage(img);
     //if this is doubled page but is a second page, then not display
     if (img.width > img.height && i === 1) {

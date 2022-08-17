@@ -50,6 +50,7 @@ body {
   bottom: 0.5rem;
   left: 0.6rem;
 }
+
 .btnsign {
   display: flex;
   justify-content: center;
@@ -58,8 +59,11 @@ body {
   width: 3rem;
   height: 3rem;
   flex-shrink: 0;
+  cursor: pointer;
 }
 .sideNav {
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   height: 100%;
   background-color: red;
@@ -69,6 +73,8 @@ body {
   left: 0;
   transition: 0.3s;
   width: 0px;
+  padding-top: 10rem;
+  background-color: black;
 }
 .navOpen {
   width: 18rem;
@@ -83,6 +89,20 @@ input {
   padding-top: 20vh;
   margin: 0;
 }
+.navButton {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  justify-content: center;
+  width: 18rem;
+  height: 3rem;
+  background-color: #1b1b1b;
+  color: azure;
+  font-family: "Roboto", sans-serif;
+  border: solid 1px black;
+  cursor: pointer;
+}
+
 .inputFile {
   display: inline-block;
   background-color: white;

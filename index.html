@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <title>JS FileReader</title>
     <link rel="stylesheet" href="styles/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <!-- <div class="logo">M</div> -->
@@ -13,9 +19,11 @@
       </div>
 
       <div class="sideNav navClose">
-        <button class="switchButton">fix order</button>
-        <button id="mode-button">reading style</button>
-        <button class="previousButton">previous</button>
+        <div class="switchButton navButton">fix order</div>
+        <div id="mode-button" class="navButton" data-mode="double">
+          2-page layout
+        </div>
+        <div class="previousButton navButton">previous</div>
       </div>
     </div>
 
