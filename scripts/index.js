@@ -9,7 +9,7 @@
   let prevEn = 0;
   let images; //hold images so they remain the same when switching modes
   let currentPage = 0; //keep track of current page in double page mode
-  //let mode = "double";
+  let mode = modeButton.dataset.mode;
   let files;
   let pageOrder = [];
   function reset() {
@@ -112,7 +112,7 @@
     function (e) {
       files = input.files;
       reset();
-      console.log(files);
+      //(files);
       handleFiles(files);
     },
     false
@@ -137,11 +137,11 @@
     switch (mode) {
       case "double":
         modeButton.dataset.mode = "conti";
-        modeButton.innerText = "2-page layout";
+        modeButton.innerText = "continous layout";
         break;
       case "conti":
         modeButton.dataset.mode = "double";
-        modeButton.innerText = "continous layout";
+        modeButton.innerText = "2-page layout";
         break;
       default:
         console.log("some thing is wrong with the mode");
@@ -166,7 +166,7 @@
 
       files = e.dataTransfer.files;
       reset();
-      console.log(files);
+      //console.log(files);
       handleFiles(files);
     },
     false
