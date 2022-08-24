@@ -1,7 +1,7 @@
 (function () {
   const input = document.querySelector('input[type="file"]');
   const dropArea = document.getElementById("drop-zone");
-  const sw = document.querySelector(".switchButton");
+  // const sw = document.querySelector(".switchButton");
   const pages = document.querySelector(".pages");
   const previousButton = document.querySelector(".previousButton");
   const modeButton = document.getElementById("mode-button");
@@ -9,7 +9,7 @@
   let prevEn = 0;
   let images; //hold images so they remain the same when switching modes
   let currentPage = 0; //keep track of current page in double page mode
-  let mode = modeButton.dataset.mode;
+  // let mode = modeButton.dataset.mode;
   let files;
   let pageOrder = [];
   function reset() {
@@ -62,7 +62,12 @@
       function (zip) {
         images = getValidImageKeys(zip.files); //get keys of valid images to be display
         //console.log(images);
-        display(mode, currentPage, incrementCurrentPage, images);
+        display(
+          modeButton.dataset.mode,
+          currentPage,
+          incrementCurrentPage,
+          images
+        );
       },
       function (e) {
         console.log(e);
@@ -75,12 +80,21 @@
     ++currentPage;
   }
   function flip() {
-    if (mode !== "double" && mode !== "single") return;
+    if (
+      modeButton.dataset.mode !== "double" &&
+      modeButton.dataset.mode !== "single"
+    )
+      return;
     const container = document.querySelector(".pages");
     if (container) {
       prevEn += 1;
       container.innerHTML = "";
-      display(mode, currentPage, incrementCurrentPage, images);
+      display(
+        modeButton.dataset.mode,
+        currentPage,
+        incrementCurrentPage,
+        images
+      );
     }
   }
 
@@ -118,12 +132,13 @@
     false
   );
 
-  sw.addEventListener("click", function (e) {
-    switchPages();
-  });
+  // sw.addEventListener("click", function (e) {
+  //   switchPages();
+  // });
 
   pages.addEventListener("click", function (e) {
     if (currentPage < 0) return;
+    if (modeButton.dataset.mode == "conti") return;
     flip();
   });
 
