@@ -133,7 +133,7 @@
   });
 
   modeButton.addEventListener("click", function (e) {
-    let mode = modeButton.dataset.mode;
+    mode = modeButton.dataset.mode;
     switch (mode) {
       case "double":
         modeButton.dataset.mode = "conti";
@@ -147,7 +147,7 @@
         console.log("some thing is wrong with the mode");
     }
     reset();
-    display(mode, currentPage, incrementCurrentPage, images);
+    display(modeButton.dataset.mode, currentPage, incrementCurrentPage, images);
   });
 
   dropArea.addEventListener(

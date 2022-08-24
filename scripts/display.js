@@ -84,7 +84,6 @@ function displayDoubly(currentPage, incrementCurrentPage, files) {
   for (let i = 0; i <= k; i++) {
     if (startPoint < 0) return; // handle the case when cover is the only page left
     let div = intializeImageContainer("doublePageContainer", "ltr");
-    // the images loaded synchronously to check if first image is double page, if so then only load one;
     let img = files[startPoint + i];
     //console.log(img);
     styleImage(img);
