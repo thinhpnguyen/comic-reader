@@ -72,12 +72,14 @@ body {
   top: 0;
   left: 0;
   transition: 0.3s;
-  width: 0px;
+  width: 18rem;
+  transform: translateX(-18rem);
   padding-top: 10rem;
   background-color: black;
 }
 .navOpen {
-  width: 18rem;
+  transform: translateX(0);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 }
 input {
   display: none;
