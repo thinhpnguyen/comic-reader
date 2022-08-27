@@ -29,9 +29,11 @@
 
   /*Filter Function*/
   function getValidImageKeys(file) {
+    console.log(file);
     let res = [];
     let re = /(.jpg|.png|.gif|.ps|.jpeg)$/;
     Object.keys(file)
+      .sort()
       .filter(function (fileName) {
         // don't consider non image files
         return re.test(fileName.toLowerCase());
