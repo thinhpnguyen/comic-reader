@@ -1,14 +1,17 @@
-import { FileDropZone } from "./file-drop-zone";
+import { FileDropZone } from "./file-drop-zone.js";
 
-let files: FileList;
+(function App() {
+  let files: FileList;
 
-const fileInput = new FileDropZone();
+  const fileInput = new FileDropZone();
 
-function onInput(f: FileList) {
-  files = f;
-  reset();
-  //(files);
-  handleFiles(files);
-}
+  function onFileInput(f: FileList) {
+    files = f;
+    //reset();
+    //(files);
+    //handleFiles(files);
+    console.log(files);
+  }
 
-fileInput.bindUIActions(onInput);
+  fileInput.bindUIActions(onFileInput);
+})();
