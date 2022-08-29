@@ -151,15 +151,15 @@
   });
 
   modeButton.addEventListener("click", function (e) {
-    mode = modeButton.dataset.mode;
+    let mode = modeButton.dataset.mode;
     switch (mode) {
       case "double":
         modeButton.dataset.mode = "conti";
-        modeButton.innerText = "continous layout";
+        modeButton.innerText = "2-page layout";
         break;
       case "conti":
         modeButton.dataset.mode = "double";
-        modeButton.innerText = "2-page layout";
+        modeButton.innerText = "continous layout";
         break;
       default:
         console.log("some thing is wrong with the mode");
