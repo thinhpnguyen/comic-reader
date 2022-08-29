@@ -70,15 +70,15 @@ body {
   position: absolute;
   z-index: 1;
   top: 0;
-  left: 0;
+  left: -18rem;
   transition: 0.3s;
   width: 18rem;
-  transform: translateX(-18rem);
+  /* transform: translateX(-18rem); */
   padding-top: 10rem;
   background-color: black;
 }
 .navOpen {
-  transform: translateX(0);
+  transform: translateX(18rem);
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 }
 input {
@@ -124,7 +124,9 @@ input {
   font-size: 1.5rem;
 }
 .pages {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   -webkit-user-drag: none;
   background-color: #1b1b1b;
 }
@@ -151,8 +153,8 @@ input {
 }
 
 .continousPageContainer {
-  display: inline-block;
-  width: 60%;
+  display: block;
+  width: 40%;
   margin: 0;
 }
 
