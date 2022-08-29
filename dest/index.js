@@ -12,6 +12,7 @@
   // let mode = modeButton.dataset.mode;
   let files;
   let pageOrder = [];
+  let firstPage = true;
   function reset() {
     firstPage = true;
     currentPage = files.length - 1; // initialize current page for every new files read in
