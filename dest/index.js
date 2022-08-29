@@ -156,10 +156,14 @@
       case "double":
         modeButton.dataset.mode = "conti";
         modeButton.innerText = "2-page layout";
+        pages.classList.replace("double-mode", "conti-mode");
+
         break;
       case "conti":
         modeButton.dataset.mode = "double";
         modeButton.innerText = "continous layout";
+        pages.classList.replace("conti-mode", "double-mode");
+
         break;
       default:
         console.log("some thing is wrong with the mode");

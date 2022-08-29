@@ -54,9 +54,17 @@ function displayContinuously(files) {
   files.map((img) => {
     const div = intializeImageContainer("continousPageContainer", "rtl"); // place holder div
     styleImage(img, div);
+    //first time
+    img.onload = () => {
+      if (img.width > img.height) {
+        div.setAttribute("style", "width:80%"); // make double page more impactful
+        div.style.width = "80%"; // cross-browser compatibility
+      }
+    };
+    //for when switching
     if (img.width > img.height) {
-      div.setAttribute("style", "width:90%"); // make double page more impactful
-      div.style.width = "90%"; // cross-browser compatibility
+      div.setAttribute("style", "width:80%"); // make double page more impactful
+      div.style.width = "80%"; // cross-browser compatibility
     }
     div.append(img);
   });
