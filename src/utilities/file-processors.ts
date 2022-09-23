@@ -1,15 +1,13 @@
-// @ts-ignore
-export async function unZip(files: FileList): Promise<HTMLElement[]> {
+export async function unZip(files: FileList): Promise<HTMLImageElement[]> {
   // @ts-ignore
   const zip = JSZip();
-  let res: HTMLElement[] = [];
 
   return zip.loadAsync(files[0]).then((zip: any) => {
     return getValidImageKeys(zip.files);
   });
 }
 
-function getValidImageKeys(files: any): HTMLElement[] {
+function getValidImageKeys(files: any): HTMLImageElement[] {
   let re = /(.jpg|.png|.gif|.ps|.jpeg)$/;
 
   return Object.keys(files)
