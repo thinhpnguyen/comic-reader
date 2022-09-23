@@ -91,6 +91,11 @@ input {
   padding-top: 20vh;
   margin: 0;
 }
+.inputContainerInNav {
+  display: inline-block;
+  width: 95%;
+  padding-top: 0;
+}
 .navButton {
   display: flex;
   align-items: center;
@@ -113,6 +118,10 @@ input {
   border: dashed grey;
   border-radius: 30px;
   cursor: pointer;
+}
+.inputFileInNav {
+  width: 100%;
+  margin: auto;
 }
 .fileIcon {
   display: inline-block;

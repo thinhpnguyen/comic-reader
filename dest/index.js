@@ -5,6 +5,7 @@
   const pages = document.querySelector(".pages");
   const previousButton = document.querySelector(".previousButton");
   const modeButton = document.getElementById("mode-button");
+  const sideNav = document.getElementById("side-nav");
 
   let prevEn = 0;
   let images; //hold images so they remain the same when switching modes
@@ -58,8 +59,10 @@
 
   function handleFiles(files) {
     const inputContainer = document.querySelector(".inputContainer");
-    inputContainer.setAttribute("style", "display:none");
-    inputContainer.style.display = "none";
+    inputContainer.classList.add("inputContainerInNav");
+    sideNav.prepend(inputContainer);
+    const inputChild = document.querySelector(".inputFile");
+    inputChild.classList.add("inputFileInNav");
     let zip = new JSZip();
     zip.loadAsync(files[0]).then(
       function (zip) {
@@ -101,15 +104,15 @@
     }
   }
 
-  // need to fix, may change current page to even or odd
-  function switchPages() {
-    // const container = document.querySelector(".pages");
-    // if (container) {
-    //   currentPage += 1;
-    //   container.innerHTML = "";
-    //   //display(mode, currentPage, keys, file);
-    // }
-  }
+  // // need to fix, may change current page to even or odd
+  // function switchPages() {
+  //   // const container = document.querySelector(".pages");
+  //   // if (container) {
+  //   //   currentPage += 1;
+  //   //   container.innerHTML = "";
+  //   //   //display(mode, currentPage, keys, file);
+  //   // }
+  // }
 
   //back button
   function previous() {
@@ -119,7 +122,12 @@
       if (currentPage < 0) reset();
       prevEn -= 1;
       container.innerHTML = "";
-      display(mode, currentPage, incrementCurrentPage, images);
+      display(
+        modeButton.dataset.mode,
+        currentPage,
+        incrementCurrentPage,
+        images
+      );
     }
   }
 

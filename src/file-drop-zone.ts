@@ -15,6 +15,9 @@ export class FileDropZone {
     if (dropAreaRef === null) console.error("Can't locate drop-area");
   }
 
+  /*
+  These eventListeners will set the FileList in App to the file dropped in
+  */
   bindUIActions(onInput: (a: FileList) => void) {
     this.input.addEventListener(
       "change",
