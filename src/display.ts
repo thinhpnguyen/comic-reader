@@ -1,48 +1,62 @@
 type Layout = "double" | "continuous";
+type Dir = "ltr" | "rtl"; //reading direction for manga or comic
+
 export class Display {
   layout: Layout;
+  container: HTMLElement;
+  dir: Dir;
+  pages: HTMLElement[];
 
   constructor() {
     this.layout = "continuous";
+    this.container = document.querySelector(".pages") as HTMLElement;
+    this.dir = "rtl";
+    this.pages = [];
   }
 
-  display(imgs: HTMLImageElement[]) {
-    if (this.layout === "double") this.displayDoubly(imgs);
-    else if (this.layout === "continuous") this.displayContinuously(imgs);
+  display(imgs: HTMLElement[]) {
+    this.pages = imgs;
+    if (this.layout === "double") this.displayDoubly();
+    else if (this.layout === "continuous") this.displayContinuously();
   }
 
-  displayDoubly(imgs: HTMLImageElement[]) {}
-  displayContinuously(imgs: HTMLImageElement[]) {
+  displayDoubly() {}
+
+  /**
+   * This function style the image container in continous layout and add it to the container
+   * For an doubled page image, it will change its width to 80% to make it more impactful
+   */
+  displayContinuously(): void {
     // continuous scroll
-    //code credit: https://github.com/dduponchel
-    imgs.map((img) => {
-      const div = this.intializeImageContainer("continousPageContainer", "rtl"); // place holder div
+    this.pages.map((div) => {
+      div.className = ""; //clear the styles from the previous layout
+      const img = div.firstChild as HTMLImageElement;
+
       this.styleImage(img);
-      //If image has been loaded
-      if (!img.width && !img.height) {
+      //If image has not been loaded
+      if (img.width === 0 || img.height === 0) {
         img.onload = () => {
           if (img.width > img.height) {
-            div.setAttribute("style", "width:80%"); // make double page more impactful
-            div.style.width = "80%"; // cross-browser compatibility
+            div.classList.add("doubled"); // make double page more impactful
           }
         };
       }
 
       //for when switching, image should be loaded
       if (img.width > img.height) {
-        div.setAttribute("style", "width:80%"); // make double page more impactful
-        div.style.width = "80%"; // cross-browser compatibility
+        div.classList.add("doubled");
       }
-      div.append(img);
+
+      this.showPage(div, "continousPageContainer");
     });
   }
-  intializeImageContainer(className: string, dir: string) {
-    let div = document.createElement("div");
-    div.className = className;
-    if (dir === "ltr") {
-      document.querySelector(".pages")?.prepend(div);
+
+  showPage(div: HTMLElement, className: string) {
+    div.classList.add(className);
+    if (this.dir === "ltr") {
+      this.container.prepend(div);
     } else {
-      document.querySelector(".pages")?.append(div);
+      this.container.append(div);
     }
 
     return div;
