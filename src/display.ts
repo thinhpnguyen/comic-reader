@@ -3,24 +3,29 @@ type Dir = "ltr" | "rtl"; //reading direction for manga or comic
 
 export class Display {
   layout: Layout;
-  container: HTMLElement;
-  dir: Dir;
+  container: HTMLElement; //the main container, it can be in contiuous mode(flex-col) or double page mode(flex-row)
+  length: number; // length of comic 0-index
   pages: HTMLElement[];
+  isOpened: boolean; // check if there is a comic opened
+
+  //double page variables
+  dir: Dir;
   pagesIndex: number[][];
   index: number;
   hasCover: boolean; // let user choose if there is a cover
-  length: number; // length of comic 0-index
-  isOpened: boolean; // check if there is a comic opened
+
   constructor() {
     this.layout = "double";
     this.container = document.querySelector(".pages") as HTMLElement;
-    this.dir = "rtl";
+    this.length = 0;
     this.pages = [];
+
+    this.dir = "rtl";
     this.pagesIndex = [];
     this.index = 0;
     this.hasCover = true;
-    this.length = 0;
     this.isOpened = false;
+
     this.bindArrowKeys();
   }
 
@@ -133,7 +138,7 @@ export class Display {
     )
       return;
 
-    console.log("clicked");
+    //console.log("clicked");
     ++this.index;
     this.displayDoubly();
   }
@@ -162,12 +167,12 @@ export class Display {
     const right = this.pages[curr[0]];
     const left = this.pages[curr[1]];
 
-    left.onclick = () => {
-      this.nextPage();
-    };
-    right.onclick = () => {
-      this.nextPage();
-    };
+    // left.onclick = () => {
+    //   this.nextPage();
+    // };
+    // right.onclick = () => {
+    //   this.nextPage();
+    // };
     this.showPage(right, "doublePageContainer");
     this.showPage(left, "doublePageContainer");
   }
