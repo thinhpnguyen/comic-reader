@@ -7,14 +7,16 @@ export class Display {
   dir: Dir;
   pages: HTMLElement[];
   pagesIndex: number[][];
+  index: number;
   hasCover: boolean; // let user choose if there is a cover
   length: number; // length of comic 0-index
   constructor() {
-    this.layout = "continuous";
+    this.layout = "double";
     this.container = document.querySelector(".pages") as HTMLElement;
     this.dir = "rtl";
     this.pages = [];
     this.pagesIndex = [];
+    this.index = 0;
     this.hasCover = true;
     this.length = 0;
   }
@@ -23,11 +25,12 @@ export class Display {
    * This function is used to index pages for the 2-page layout
    * since some page is merged together, so they need to be displayed alone
    */
-  indexPages() {
+  indexPages(): Promise<void> {
     //wait for all images to be loaded
     const promiseArray: Promise<void>[] = [];
     for (const div of this.pages) {
       const img = div.firstChild as HTMLImageElement;
+      this.styleImage(img);
       promiseArray.push(
         new Promise((resolve) => {
           //.complete doesn't work so have to check dimension to make sure
@@ -82,13 +85,50 @@ export class Display {
    */
   async display(imgs: HTMLElement[]) {
     this.pages = imgs;
-    this.indexPages();
 
-    if (this.layout === "double") this.displayDoubly();
-    else if (this.layout === "continuous") this.displayContinuously();
+    if (this.layout === "double") {
+      await this.indexPages();
+      this.displayDoubly();
+    } else if (this.layout === "continuous") this.displayContinuously();
   }
 
-  displayDoubly() {}
+  nextPage(): void {
+    if (this.index === this.indexPages.length - 1) return;
+    ++this.index;
+    this.displayDoubly();
+  }
+  previousPage(): void {
+    if (this.index === 0) return;
+    --this.index;
+    this.displayDoubly();
+  }
+  displayDoubly() {
+    //wait for the indexing to be done first
+    // while (this.indexPages.length === 0);
+    this.container.innerHTML = "";
+    let curr = this.pagesIndex[this.index];
+
+    //merged page
+    if (curr.length === 1) {
+      const div = this.pages[curr[0]];
+      div.addEventListener("click", () => {
+        this.nextPage();
+      });
+      this.showPage(div, "mergedPageContainer");
+      return;
+    }
+    const right = this.pages[curr[0]];
+    const left = this.pages[curr[1]];
+
+    left.addEventListener("click", () => {
+      this.nextPage();
+    });
+    right.addEventListener("click", () => {
+      this.nextPage();
+    });
+    this.showPage(right, "doublePageContainer");
+    this.showPage(left, "doublePageContainer");
+  }
 
   /**
    * This function style the image pages stored in this class in continous layout and add them to the container
@@ -121,7 +161,7 @@ export class Display {
 
   showPage(div: HTMLElement, className: string) {
     div.classList.add(className);
-    if (this.dir === "ltr") {
+    if (this.dir === "rtl") {
       this.container.prepend(div);
     } else {
       this.container.append(div);
