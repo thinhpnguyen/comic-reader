@@ -19,8 +19,39 @@ export class Display {
     this.index = 0;
     this.hasCover = true;
     this.length = 0;
+    this.bindArrowKeys();
   }
 
+  bindArrowKeys(): void {
+    document.onkeydown = (e) => {
+      let callback = null;
+      if (this.dir === "rtl") {
+        callback = {
+          ArrowLeft: () => {
+            this.nextPage();
+          },
+          ArrowRight: () => {
+            this.previousPage();
+          },
+          // "ArrowUp"    : upHandler,
+          // "ArrowDown"  : downHandler,
+        }[e.key];
+      } else {
+        callback = {
+          ArrowLeft: () => {
+            this.previousPage();
+          },
+          ArrowRight: () => {
+            this.nextPage();
+          },
+          // "ArrowUp"    : upHandler,
+          // "ArrowDown"  : downHandler,
+        }[e.key];
+      }
+
+      callback?.();
+    };
+  }
   /**
    * This function is used to index pages for the 2-page layout
    * since some page is merged together, so they need to be displayed alone
@@ -76,7 +107,7 @@ export class Display {
         }
         ++this.length;
       }
-      console.log(this.pagesIndex);
+      //   console.log(this.pagesIndex);
     });
   }
   /**
@@ -93,12 +124,17 @@ export class Display {
   }
 
   nextPage(): void {
-    if (this.index === this.indexPages.length - 1) return;
+    if (
+      this.layout === "continuous" ||
+      this.index === this.pagesIndex.length - 1
+    )
+      return;
+
     ++this.index;
     this.displayDoubly();
   }
   previousPage(): void {
-    if (this.index === 0) return;
+    if (this.layout === "continuous" || this.index === 0) return;
     --this.index;
     this.displayDoubly();
   }
