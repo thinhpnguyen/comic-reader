@@ -10,6 +10,7 @@ export class Display {
   index: number;
   hasCover: boolean; // let user choose if there is a cover
   length: number; // length of comic 0-index
+  isOpened: boolean; // check if there is a comic opened
   constructor() {
     this.layout = "double";
     this.container = document.querySelector(".pages") as HTMLElement;
@@ -19,6 +20,7 @@ export class Display {
     this.index = 0;
     this.hasCover = true;
     this.length = 0;
+    this.isOpened = false;
     this.bindArrowKeys();
   }
 
@@ -107,7 +109,7 @@ export class Display {
         }
         ++this.length;
       }
-      //   console.log(this.pagesIndex);
+      //console.log(this.pagesIndex);
     });
   }
   /**
@@ -116,7 +118,7 @@ export class Display {
    */
   async display(imgs: HTMLElement[]) {
     this.pages = imgs;
-
+    this.isOpened = true;
     if (this.layout === "double") {
       await this.indexPages();
       this.displayDoubly();
@@ -125,16 +127,20 @@ export class Display {
 
   nextPage(): void {
     if (
+      !this.isOpened ||
       this.layout === "continuous" ||
       this.index === this.pagesIndex.length - 1
     )
       return;
 
+    console.log("clicked");
     ++this.index;
     this.displayDoubly();
   }
   previousPage(): void {
-    if (this.layout === "continuous" || this.index === 0) return;
+    if (!this.isOpened || this.layout === "continuous" || this.index === 0)
+      return;
+
     --this.index;
     this.displayDoubly();
   }
@@ -156,12 +162,12 @@ export class Display {
     const right = this.pages[curr[0]];
     const left = this.pages[curr[1]];
 
-    left.addEventListener("click", () => {
+    left.onclick = () => {
       this.nextPage();
-    });
-    right.addEventListener("click", () => {
+    };
+    right.onclick = () => {
       this.nextPage();
-    });
+    };
     this.showPage(right, "doublePageContainer");
     this.showPage(left, "doublePageContainer");
   }
