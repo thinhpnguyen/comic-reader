@@ -30,15 +30,14 @@ export class Display {
       const img = div.firstChild as HTMLImageElement;
       promiseArray.push(
         new Promise((resolve) => {
-          //.complete doesn't work
-          //so have to await for this function before display pages else it will mess with .onload function
-          //   if (img.complete) {
-          //     resolve();
-          //   } else {
-          img.onload = () => {
+          //.complete doesn't work so have to check dimension to make sure
+          if (img.complete && img.width && img.height) {
             resolve();
-            // };
-          };
+          } else {
+            img.addEventListener("load", () => {
+              resolve();
+            });
+          }
         })
       );
     }
@@ -74,14 +73,17 @@ export class Display {
         }
         ++this.length;
       }
-      //   console.log(this.pagesIndex);
+      console.log(this.pagesIndex);
     });
   }
+  /**
+   * This function should only be called when a new file is dropped in by App()
+   * @param imgs passed in from App()
+   */
   async display(imgs: HTMLElement[]) {
-    if (this.pagesIndex.length === 0) {
-      this.pages = imgs;
-      await this.indexPages();
-    }
+    this.pages = imgs;
+    this.indexPages();
+
     if (this.layout === "double") this.displayDoubly();
     else if (this.layout === "continuous") this.displayContinuously();
   }
@@ -99,15 +101,14 @@ export class Display {
       const img = div.firstChild as HTMLImageElement;
 
       this.styleImage(img);
-      // don't need to do this anymore since all images must be loaded before display
-      //   //If image has not been loaded
-      //   if (img.width === 0 || img.height === 0) {
-      //     img.onload = () => {
-      //       if (img.width > img.height) {
-      //         div.classList.add("doubled"); // make double page more impactful
-      //       }
-      //     };
-      //   }
+      //If image has not been loaded
+      if (img.width === 0 || img.height === 0) {
+        img.addEventListener("load", () => {
+          if (img.width > img.height) {
+            div.classList.add("doubled"); // make double page more impactful
+          }
+        });
+      }
 
       //for when switching, image should be loaded
       if (img.width > img.height) {
