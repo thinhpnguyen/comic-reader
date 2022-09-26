@@ -15,7 +15,7 @@ export class Display {
   hasCover: boolean; // let user choose if there is a cover
 
   constructor() {
-    this.layout = "double";
+    this.layout = "continuous";
     this.container = document.querySelector(".pages") as HTMLElement;
     this.length = 0;
     this.pages = [];

@@ -6,7 +6,7 @@ import { SideNav } from "./side-nav.js";
 (function App() {
   const display = new Display();
   const fileInput = new FileDropZone();
-  const sideNav = new SideNav();
+  const sideNav = new SideNav(display);
 
   async function onFileInput(f: FileList) {
     const imgs = await unZip(f);
