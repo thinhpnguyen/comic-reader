@@ -20,6 +20,9 @@ export class Display {
         this.isOpened = false;
         this.bindArrowKeys();
     }
+    /**
+     * By doing this, you don't have to rebind them when switching readding direction
+     */
     bindArrowKeys() {
         document.onkeydown = (e) => {
             let callback = null;
@@ -138,6 +141,10 @@ export class Display {
         --this.index;
         this.displayDoubly();
     }
+    /**
+     * This function must clear the prev pages everytime it is called
+     * @returns
+     */
     displayDoubly() {
         //wait for the indexing to be done first
         // while (this.indexPages.length === 0);
@@ -200,7 +207,7 @@ export class Display {
                 this.layout = "double";
                 this.container.innerHTML = "";
                 this.container.classList.replace("conti-mode", "double-mode");
-                if (this.pagesIndex.length == 0) {
+                if (this.pagesIndex.length === 0) {
                     yield this.indexPages();
                 }
                 this.displayDoubly();
@@ -212,6 +219,16 @@ export class Display {
                 this.displayContinuously();
             }
         });
+    }
+    /**
+     * This function is validated by the caller
+     */
+    changeReadingDir() {
+        if (this.dir === "rtl")
+            this.dir = "ltr";
+        else
+            this.dir = "rtl";
+        this.displayDoubly();
     }
     showPage(div, className) {
         div.classList.add(className);
