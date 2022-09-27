@@ -55,9 +55,9 @@ export class SideNav {
 
       const dir = this.display.dir;
       if (dir === "rtl") {
-        this.dirButton.innerText = "left-to-right";
+        this.dirButton.innerText = "Left-to-right";
       } else {
-        this.dirButton.innerText = "right-to-left";
+        this.dirButton.innerText = "Right-to-left";
       }
 
       this.display.changeReadingDir();
