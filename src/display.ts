@@ -173,8 +173,13 @@ export class Display {
     // right.onclick = () => {
     //   this.nextPage();
     // };
-    this.showPage(right, "doublePageContainer");
-    this.showPage(left, "doublePageContainer");
+    if (this.dir === "rtl") {
+      this.showPage(left, "doublePageContainer");
+      this.showPage(right, "doublePageContainer");
+    } else {
+      this.showPage(right, "doublePageContainer");
+      this.showPage(left, "doublePageContainer");
+    }
   }
 
   /**
@@ -206,15 +211,25 @@ export class Display {
     });
   }
 
+  async switchLayout(): Promise<void> {
+    if (this.layout === "continuous") {
+      this.layout = "double";
+      this.container.innerHTML = "";
+      this.container.classList.replace("conti-mode", "double-mode");
+      if (this.pagesIndex.length == 0) {
+        await this.indexPages();
+      }
+      this.displayDoubly();
+    } else {
+      this.layout = "continuous";
+      this.container.innerHTML = "";
+      this.container.classList.replace("double-mode", "conti-mode");
+      this.displayContinuously();
+    }
+  }
   showPage(div: HTMLElement, className: string) {
     div.classList.add(className);
-    if (this.dir === "rtl") {
-      this.container.prepend(div);
-    } else {
-      this.container.append(div);
-    }
-
-    return div;
+    this.container.append(div);
   }
 
   styleImage(img: HTMLImageElement) {

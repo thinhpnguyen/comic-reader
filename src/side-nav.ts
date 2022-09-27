@@ -44,7 +44,7 @@ export class SideNav {
           console.log("some thing is wrong with the mode");
       }
 
-      //this.display.switchLayout();
+      this.display.switchLayout();
     });
   }
 }
