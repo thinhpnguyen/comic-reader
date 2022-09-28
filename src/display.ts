@@ -34,32 +34,7 @@ export class Display {
    */
   bindArrowKeys(): void {
     document.onkeydown = (e) => {
-      let callback = null;
-      if (this.dir === "rtl") {
-        callback = {
-          ArrowLeft: () => {
-            this.nextPage();
-          },
-          ArrowRight: () => {
-            this.previousPage();
-          },
-          // "ArrowUp"    : upHandler,
-          // "ArrowDown"  : downHandler,
-        }[e.key];
-      } else {
-        callback = {
-          ArrowLeft: () => {
-            this.previousPage();
-          },
-          ArrowRight: () => {
-            this.nextPage();
-          },
-          // "ArrowUp"    : upHandler,
-          // "ArrowDown"  : downHandler,
-        }[e.key];
-      }
-
-      callback?.();
+      this.navigateActions(e.key);
     };
   }
 
@@ -104,16 +79,16 @@ export class Display {
 
       //left side
       if (e.pageX < containerStart + clickableArea) {
-        this.clickAction("ArrowLeft");
+        this.navigateActions("ArrowLeft");
       }
       //right side
       else if (e.pageX > containerEnd - clickableArea) {
-        this.clickAction("ArrowRight");
+        this.navigateActions("ArrowRight");
       }
     });
   }
 
-  clickAction(key: string) {
+  navigateActions(key: string) {
     let callback = null;
     if (this.dir === "rtl") {
       callback = {
