@@ -31,7 +31,8 @@ export class SideNav {
     //layout button
     this.layoutButton.addEventListener("click", () => {
       const mode = this.display.layout;
-
+      const comicOpened = this.display.comicOpened;
+      if (!comicOpened) return;
       switch (mode) {
         case "double":
           this.layoutButton.innerText = "2-page layout";
@@ -51,7 +52,8 @@ export class SideNav {
     // dir button
     this.dirButton.addEventListener("click", () => {
       const layout = this.display.layout;
-      if (layout === "continuous") return;
+      const comicOpened = this.display.comicOpened;
+      if (!comicOpened || layout === "continuous") return;
 
       const dir = this.display.dir;
       if (dir === "rtl") {

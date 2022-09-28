@@ -6,7 +6,7 @@ export class Display {
   container: HTMLElement; //the main container, it can be in contiuous mode(flex-col) or double page mode(flex-row)
   length: number; // length of comic 0-index
   pages: HTMLElement[];
-  isOpened: boolean; // check if there is a comic opened
+  comicOpened: boolean; // check if there is a comic opened
 
   //double page variables
   dir: Dir;
@@ -19,14 +19,14 @@ export class Display {
     this.container = document.querySelector(".pages") as HTMLElement;
     this.length = 0;
     this.pages = [];
+    this.comicOpened = false;
 
     this.dir = "rtl";
     this.pagesIndex = [];
     this.index = 0;
     this.hasCover = true;
-    this.isOpened = false;
-
     this.bindArrowKeys();
+    this.bindMouseEvents();
   }
 
   /**
@@ -61,6 +61,85 @@ export class Display {
 
       callback?.();
     };
+  }
+
+  bindMouseEvents(): void {
+    const containerStart = this.container.getBoundingClientRect().x;
+    const containerEnd = this.container.getBoundingClientRect().right;
+
+    const clickableArea = Math.floor((containerEnd - containerStart) / 3);
+
+    let lastMouseDown = 0;
+    this.container.addEventListener("mousemove", (e) => {
+      if (!this.comicOpened || this.layout !== "double") return;
+
+      //since this event is for the container, don't need to check if the pointer is outside container
+
+      //left side
+      if (e.pageX < containerStart + clickableArea) {
+        this.container.style.cursor = "pointer";
+      }
+      //right side
+      else if (e.pageX > containerEnd - clickableArea) {
+        this.container.style.cursor = "pointer";
+      } else this.container.style.cursor = "default";
+    });
+
+    this.container.addEventListener("mousedown", (e) => {
+      lastMouseDown = e.pageX;
+    });
+
+    this.container.addEventListener("mouseup", (e) => {
+      if (!this.comicOpened || this.layout !== "double") return;
+
+      //check if the down click was in the container
+      if (
+        lastMouseDown > containerStart + clickableArea &&
+        lastMouseDown < containerEnd - clickableArea
+      ) {
+        return;
+      }
+
+      //since this event is for the container, don't need to check if the pointer is outside container
+
+      //left side
+      if (e.pageX < containerStart + clickableArea) {
+        this.clickAction("ArrowLeft");
+      }
+      //right side
+      else if (e.pageX > containerEnd - clickableArea) {
+        this.clickAction("ArrowRight");
+      }
+    });
+  }
+
+  clickAction(key: string) {
+    let callback = null;
+    if (this.dir === "rtl") {
+      callback = {
+        ArrowLeft: () => {
+          this.nextPage();
+        },
+        ArrowRight: () => {
+          this.previousPage();
+        },
+        // "ArrowUp"    : upHandler,
+        // "ArrowDown"  : downHandler,
+      }[key];
+    } else {
+      callback = {
+        ArrowLeft: () => {
+          this.previousPage();
+        },
+        ArrowRight: () => {
+          this.nextPage();
+        },
+        // "ArrowUp"    : upHandler,
+        // "ArrowDown"  : downHandler,
+      }[key];
+    }
+
+    callback?.();
   }
   /**
    * This function is used to index pages for the 2-page layout
@@ -126,7 +205,7 @@ export class Display {
    */
   async display(imgs: HTMLElement[]) {
     this.pages = imgs;
-    this.isOpened = true;
+    this.comicOpened = true;
     if (this.layout === "double") {
       await this.indexPages();
       this.displayDoubly();
@@ -135,7 +214,7 @@ export class Display {
 
   nextPage(): void {
     if (
-      !this.isOpened ||
+      !this.comicOpened ||
       this.layout === "continuous" ||
       this.index === this.pagesIndex.length - 1
     )
@@ -146,7 +225,7 @@ export class Display {
     this.displayDoubly();
   }
   previousPage(): void {
-    if (!this.isOpened || this.layout === "continuous" || this.index === 0)
+    if (!this.comicOpened || this.layout === "continuous" || this.index === 0)
       return;
 
     --this.index;
@@ -166,9 +245,6 @@ export class Display {
     //merged page
     if (curr.length === 1) {
       const div = this.pages[curr[0]];
-      div.addEventListener("click", () => {
-        this.nextPage();
-      });
       this.showPage(div, "mergedPageContainer");
       return;
     }
