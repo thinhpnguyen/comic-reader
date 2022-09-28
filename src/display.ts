@@ -44,7 +44,6 @@ export class Display {
 
     const clickableArea = Math.floor((containerEnd - containerStart) / 3);
 
-    let lastMouseDown = 0;
     this.container.addEventListener("mousemove", (e) => {
       if (!this.comicOpened || this.layout !== "double") return;
 
@@ -60,20 +59,8 @@ export class Display {
       } else this.container.style.cursor = "default";
     });
 
-    this.container.addEventListener("mousedown", (e) => {
-      lastMouseDown = e.pageX;
-    });
-
-    this.container.addEventListener("mouseup", (e) => {
+    this.container.addEventListener("click", (e) => {
       if (!this.comicOpened || this.layout !== "double") return;
-
-      //check if the down click was in the container
-      if (
-        lastMouseDown > containerStart + clickableArea &&
-        lastMouseDown < containerEnd - clickableArea
-      ) {
-        return;
-      }
 
       //since this event is for the container, don't need to check if the pointer is outside container
 
