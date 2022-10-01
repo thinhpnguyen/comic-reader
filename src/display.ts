@@ -109,6 +109,7 @@ export class Display {
   }
 
   async switchLayout(): Promise<void> {
+    if (!this.comicOpened) return;
     if (this.layout === "continuous") {
       this.layout = "double";
       this.container.innerHTML = "";

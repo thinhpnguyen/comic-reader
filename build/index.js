@@ -15,8 +15,12 @@ import { SideNav } from "./side-nav.js";
     const display = new Display();
     const fileInput = new FileDropZone();
     const sideNav = new SideNav(display);
+    const dropZoneContainer = document.querySelector(".inputContainer");
     function onFileInput(f) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!display.comicOpened) {
+                document.body.removeChild(dropZoneContainer);
+            }
             const imgs = yield unZip(f);
             display.display(imgs);
         });
