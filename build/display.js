@@ -54,20 +54,20 @@ export class Display {
                 this.showPage(div, "mergedPageContainer");
             }
             else {
-                this.showPage(div, "doublePageContainer");
+                this.showPage(div, "doublePageContainer center");
             }
             return;
         }
         //two separate pages
-        const right = this.pages[curr[0]];
-        const left = this.pages[curr[1]];
+        const first = this.pages[curr[0]];
+        const second = this.pages[curr[1]];
         if (this.dir === "rtl") {
-            this.showPage(left, "doublePageContainer");
-            this.showPage(right, "doublePageContainer");
+            this.showPage(second, "doublePageContainer toRight");
+            this.showPage(first, "doublePageContainer toLeft");
         }
         else {
-            this.showPage(right, "doublePageContainer");
-            this.showPage(left, "doublePageContainer");
+            this.showPage(first, "doublePageContainer toRight");
+            this.showPage(second, "doublePageContainer toLeft");
         }
     }
     /**
@@ -88,11 +88,11 @@ export class Display {
                     }
                 });
             }
+            this.showPage(div, "continousPageContainer");
             //for when switching, image should be loaded
             if (img.width > img.height) {
                 div.classList.add("doubled");
             }
-            this.showPage(div, "continousPageContainer");
         });
     }
     switchLayout() {
@@ -125,12 +125,13 @@ export class Display {
         };
     }
     bindMouseEvents() {
-        const containerStart = this.container.getBoundingClientRect().x;
-        const containerEnd = this.container.getBoundingClientRect().right;
-        const clickableArea = Math.floor((containerEnd - containerStart) / 3);
         this.container.addEventListener("mousemove", (e) => {
             if (!this.comicOpened || this.layout !== "double")
                 return;
+            //have to do it here since the user can resize their browser
+            const containerStart = this.container.getBoundingClientRect().x;
+            const containerEnd = this.container.getBoundingClientRect().right;
+            const clickableArea = Math.floor((containerEnd - containerStart) / 3);
             //since this event is for the container, don't need to check if the pointer is outside container
             //left side
             if (e.pageX < containerStart + clickableArea) {
@@ -146,6 +147,9 @@ export class Display {
         this.container.addEventListener("click", (e) => {
             if (!this.comicOpened || this.layout !== "double")
                 return;
+            const containerStart = this.container.getBoundingClientRect().x;
+            const containerEnd = this.container.getBoundingClientRect().right;
+            const clickableArea = Math.floor((containerEnd - containerStart) / 3);
             //since this event is for the container, don't need to check if the pointer is outside container
             //left side
             if (e.pageX < containerStart + clickableArea) {
@@ -292,7 +296,7 @@ export class Display {
     /*********************** HELPER FUNCTIONS ****************************/
     showPage(div, className) {
         div.className = "";
-        div.classList.add(className);
+        div.className += className;
         this.container.append(div);
     }
     styleImage(img) {
