@@ -55,10 +55,10 @@ export class Display {
     this.container.innerHTML = "";
     let curr = this.pagesIndex[this.index];
 
+    //merged page
     if (curr.length === 1) {
       const div = this.pages[curr[0]];
       const img = div.firstChild as HTMLImageElement;
-      //merged page
       if (img.width > img.height) {
         this.showPage(div, "mergedPageContainer");
       } else {
@@ -109,7 +109,6 @@ export class Display {
   }
 
   async switchLayout(): Promise<void> {
-    if (!this.comicOpened) return;
     if (this.layout === "continuous") {
       this.layout = "double";
       this.container.innerHTML = "";
