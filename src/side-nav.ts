@@ -4,14 +4,17 @@ export class SideNav {
   navCtrBtn: HTMLElement;
   nav: HTMLElement;
   display: Display;
-  layoutButton: HTMLElement;
-  dirButton: HTMLElement;
+  layoutBtn: HTMLElement;
+  dirBtn: HTMLElement;
+  hasCoverBtn: HTMLElement;
   constructor(d: Display) {
     this.navCtrBtn = document.querySelector(".navCtrlBtn") as HTMLElement;
     this.nav = document.getElementById("side-nav") as HTMLElement;
-    this.layoutButton = document.getElementById("mode-button") as HTMLElement;
-    this.dirButton = document.getElementById("dir-button") as HTMLElement;
-
+    this.layoutBtn = document.getElementById("mode-button") as HTMLElement;
+    this.dirBtn = document.getElementById("dir-button") as HTMLElement;
+    this.hasCoverBtn = this.hasCoverBtn = document.getElementById(
+      "has-cover-button"
+    ) as HTMLElement;
     this.display = d;
     this.bindUIActions();
   }
@@ -29,17 +32,17 @@ export class SideNav {
     });
 
     //layout button
-    this.layoutButton.addEventListener("click", () => {
+    this.layoutBtn.addEventListener("click", () => {
       const mode = this.display.layout;
-      const comicOpened = this.display.comicOpened;
-      if (!comicOpened) return;
+
+      // user can change the layout before opening commic
       switch (mode) {
         case "double":
-          this.layoutButton.innerText = "2-page layout";
+          this.layoutBtn.innerText = "2-page layout";
 
           break;
         case "continuous":
-          this.layoutButton.innerText = "Continous layout";
+          this.layoutBtn.innerText = "Continous layout";
 
           break;
         default:
@@ -50,19 +53,33 @@ export class SideNav {
     });
 
     // dir button
-    this.dirButton.addEventListener("click", () => {
+    this.dirBtn.addEventListener("click", () => {
       const layout = this.display.layout;
       const comicOpened = this.display.comicOpened;
       if (!comicOpened || layout === "continuous") return;
 
       const dir = this.display.dir;
       if (dir === "rtl") {
-        this.dirButton.innerText = "Left-to-right";
+        this.dirBtn.innerText = "Right-to-left";
       } else {
-        this.dirButton.innerText = "Right-to-left";
+        this.dirBtn.innerText = "Left-to-right";
       }
 
       this.display.changeReadingDir();
+    });
+
+    // has cover button
+
+    this.hasCoverBtn.addEventListener("click", () => {
+      const hasCover = this.display.hasCover;
+
+      //currently has cover => change to not hasCover mode
+      if (hasCover) {
+        this.hasCoverBtn.classList.remove("hasCover");
+      } else {
+        this.hasCoverBtn.classList.add("hasCover");
+      }
+      this.display.switchCoverState();
     });
   }
 }

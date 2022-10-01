@@ -109,7 +109,9 @@ input {
   border: solid 1px black;
   cursor: pointer;
 }
-
+.hasCover {
+  background-color: rgb(246, 156, 85);
+}
 .inputFile {
   display: inline-block;
   background-color: white;
