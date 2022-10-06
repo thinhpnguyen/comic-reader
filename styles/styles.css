@@ -148,7 +148,7 @@ input {
   flex-direction: row;
   justify-content: center;
   max-width: 100vw;
-  /* max-height: 100vh; */
+  max-height: 100vh;
 }
 .page {
   display: block;
@@ -212,6 +212,8 @@ input {
     rgba(0, 0, 0, 0.45) 0%,
     rgba(0, 0, 0, 0) 50%
   );
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
 }
 .hover-right {
   display: flex;
@@ -229,6 +231,8 @@ input {
     rgba(0, 0, 0, 0.45) 0%,
     rgba(0, 0, 0, 0) 50%
   );
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
 }
 .hover-left .hover-arrow {
   transform: rotate(-90deg);
@@ -247,6 +251,10 @@ input {
   font-size: 2rem;
   padding: 0 2rem 0;
   text-shadow: 0 2px 1px rgba(0, 0, 0, 0.7), 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+.opacity-viz {
+  transition: opacity 0.3s ease-in;
+  opacity: 1;
 }
 @media (max-width: 50rem) {
   .inputContainer {

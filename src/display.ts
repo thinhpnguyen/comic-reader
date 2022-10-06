@@ -3,6 +3,7 @@ type Dir = "ltr" | "rtl"; //reading direction for manga or comic
 
 export class Display {
   layout: Layout;
+  reader: HTMLElement; // contains the container and the hover direction indication of double page layout
   container: HTMLElement; //the main container, it can be in contiuous mode(flex-col) or double page mode(flex-row)
   length: number; // length of comic 0-index
   pages: HTMLElement[];
@@ -15,9 +16,11 @@ export class Display {
   pagesIndexNoCover: number[][];
   index: number;
   hasCover: boolean; // let user choose if there is a cover
-
+  leftHover: HTMLElement;
+  rightHover: HTMLElement;
   constructor() {
     this.layout = "continuous";
+    this.reader = document.getElementById("reader") as HTMLElement;
     this.container = document.querySelector(".pages") as HTMLElement;
     this.length = 0;
     this.pages = [];
@@ -27,6 +30,8 @@ export class Display {
     this.pagesIndexWithCover = [];
     this.pagesIndexNoCover = [];
     this.pagesIndex = this.pagesIndexWithCover; //should only be mutated by indexPages()
+    this.leftHover = document.querySelector(".hover-left") as HTMLElement;
+    this.rightHover = document.querySelector(".hover-right") as HTMLElement;
 
     this.index = 0;
     this.hasCover = true;
@@ -136,41 +141,65 @@ export class Display {
   }
 
   bindMouseEvents(): void {
-    this.container.addEventListener("mousemove", (e) => {
+    let leftID = -1;
+    let rightID = -1;
+
+    this.reader.addEventListener("mousemove", (e) => {
       if (!this.comicOpened || this.layout !== "double") return;
 
       //have to do it here since the user can resize their browser
-      const containerStart = this.container.getBoundingClientRect().x;
-      const containerEnd = this.container.getBoundingClientRect().right;
+      const readerStart = this.reader.getBoundingClientRect().x;
+      const readerEnd = this.reader.getBoundingClientRect().right;
 
-      const clickableArea = Math.floor((containerEnd - containerStart) / 3);
-      //since this event is for the container, don't need to check if the pointer is outside container
+      const clickableArea = Math.floor((readerEnd - readerStart) / 3);
+      //since this event is for the container, don't need to check if the pointer is outside reader
 
       //left side
-      if (e.pageX < containerStart + clickableArea) {
-        this.container.style.cursor = "pointer";
+      if (e.pageX < readerStart + clickableArea) {
+        if (leftID >= 0) clearInterval(leftID);
+        this.leftHover.classList.add("opacity-viz");
+        leftID = setTimeout(() => {
+          this.leftHover.classList.remove("opacity-viz");
+        }, 1000);
+        this.reader.style.cursor = "pointer";
       }
       //right side
-      else if (e.pageX > containerEnd - clickableArea) {
-        this.container.style.cursor = "pointer";
-      } else this.container.style.cursor = "default";
+      else if (e.pageX > readerEnd - clickableArea) {
+        if (rightID >= 0) clearInterval(rightID);
+        this.rightHover.classList.add("opacity-viz");
+        rightID = setTimeout(() => {
+          this.rightHover.classList.remove("opacity-viz");
+        }, 1000);
+        this.reader.style.cursor = "pointer";
+      } else {
+        // when the mouse move from one side to the other
+        // we should turn off the indicator for the previous side
+        this.leftHover.classList.remove("opacity-viz");
+        this.rightHover.classList.remove("opacity-viz");
+        this.reader.style.cursor = "default";
+      }
     });
 
-    this.container.addEventListener("click", (e) => {
+    addEventListener("mouseout", (e) => {
+      this.leftHover.classList.remove("opacity-viz");
+      this.rightHover.classList.remove("opacity-viz");
+    });
+
+    this.reader.addEventListener("click", (e) => {
       if (!this.comicOpened || this.layout !== "double") return;
 
-      const containerStart = this.container.getBoundingClientRect().x;
-      const containerEnd = this.container.getBoundingClientRect().right;
+      const readerStart = this.reader.getBoundingClientRect().x;
+      const readerEnd = this.reader.getBoundingClientRect().right;
 
-      const clickableArea = Math.floor((containerEnd - containerStart) / 3);
-      //since this event is for the container, don't need to check if the pointer is outside container
+      const clickableArea = Math.floor((readerEnd - readerStart) / 3);
+      //since this event is for the reader, don't need to check if the pointer is outside reader
 
       //left side
-      if (e.pageX < containerStart + clickableArea) {
+      if (e.pageX < readerStart + clickableArea) {
         this.navigateActions("ArrowLeft");
       }
       //right side
-      else if (e.pageX > containerEnd - clickableArea) {
+      else if (e.pageX > readerEnd - clickableArea) {
         this.navigateActions("ArrowRight");
       }
     });
