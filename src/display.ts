@@ -156,6 +156,17 @@ export class Display {
 
       //left side
       if (e.pageX < readerStart + clickableArea) {
+        // First page, so there is no previous
+        if (this.index === 0 && this.dir === "ltr") {
+          this.leftHover.classList.remove("opacity-viz");
+          return;
+        }
+        // Last page, so there is no next
+        if (this.index === this.pagesIndex.length - 1 && this.dir === "rtl") {
+          this.leftHover.classList.remove("opacity-viz");
+          return;
+        }
+
         if (leftID >= 0) clearInterval(leftID);
         this.leftHover.classList.add("opacity-viz");
         leftID = setTimeout(() => {
@@ -165,6 +176,16 @@ export class Display {
       }
       //right side
       else if (e.pageX > readerEnd - clickableArea) {
+        // First page, so there is no previous
+        if (this.index === 0 && this.dir === "rtl") {
+          this.rightHover.classList.remove("opacity-viz");
+          return;
+        }
+        // Last page, so there is no next
+        if (this.index === this.pagesIndex.length - 1 && this.dir === "ltr") {
+          this.rightHover.classList.remove("opacity-viz");
+          return;
+        }
         if (rightID >= 0) clearInterval(rightID);
         this.rightHover.classList.add("opacity-viz");
         rightID = setTimeout(() => {
@@ -180,7 +201,7 @@ export class Display {
       }
     });
 
-    addEventListener("mouseout", (e) => {
+    this.reader.addEventListener("mouseout", (e) => {
       this.leftHover.classList.remove("opacity-viz");
       this.rightHover.classList.remove("opacity-viz");
     });
